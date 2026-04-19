@@ -64,6 +64,16 @@ export const createTicket = async (ticketData) => {
   return response.data;
 };
 
+export const checkDuplicateTickets = async (title, description) => {
+  const params = new URLSearchParams();
+  if (title) params.append('title', title);
+  if (description) params.append('description', description);
+
+  const query = params.toString();
+  const response = await api.get(`/api/tickets/duplicate-check${query ? `?${query}` : ''}`);
+  return Array.isArray(response.data) ? response.data : [];
+};
+
 // Update a ticket
 export const updateTicket = async (id, ticketData) => {
   const response = await api.put(`/api/tickets/${id}`, ticketData);
