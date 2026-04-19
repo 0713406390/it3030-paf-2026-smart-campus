@@ -1,5 +1,6 @@
 package com.sliit.paf.service.member3;
 
+import com.sliit.paf.dto.member3.DuplicateTicketSuggestion;
 import com.sliit.paf.dto.member3.TicketRequest;
 import com.sliit.paf.dto.member3.TicketUpdateRequest;
 import com.sliit.paf.model.member3.Ticket;
@@ -43,4 +44,6 @@ public interface TicketService {
     TicketAttachment getAttachmentById(Long attachmentId);
 
     void deleteAttachment(Long attachmentId, Long userId);
+
+    List<DuplicateTicketSuggestion> findPotentialDuplicates(String title, String description);
 }

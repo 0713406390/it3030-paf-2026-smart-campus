@@ -1,5 +1,6 @@
 package com.sliit.paf.service.member3.Impl.member3;
 
+import com.sliit.paf.dto.member3.DuplicateTicketSuggestion;
 import com.sliit.paf.dto.member3.TicketRequest;
 import com.sliit.paf.dto.member3.TicketUpdateRequest;
 import com.sliit.paf.exception.ResourceNotFoundException;
@@ -13,6 +14,7 @@ import com.sliit.paf.repository.member3.UserRepository;
 import com.sliit.paf.service.FileStorageService;
 import com.sliit.paf.service.member3.TicketService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +23,20 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class TicketServiceImpl implements TicketService {
+    private static final int DUPLICATE_LOOKBACK_DAYS = 30;
+    private static final int DUPLICATE_CANDIDATE_LIMIT = 100;
+    private static final int DUPLICATE_RESULT_LIMIT = 5;
+    private static final double DUPLICATE_MIN_SCORE = 0.35;
+
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
     private final TicketAttachmentRepository attachmentRepository;
@@ -349,6 +361,104 @@ public class TicketServiceImpl implements TicketService {
 
         fileStorageService.deleteFile(attachment.getFilePath());
         attachmentRepository.delete(attachment);
+    }
+
+    @Override
+    public List<DuplicateTicketSuggestion> findPotentialDuplicates(String title, String description) {
+        String normalizedTitle = normalizeText(title);
+        String normalizedDescription = normalizeText(description);
+        String sourceText = normalizeText((title == null ? "" : title) + " " + (description == null ? "" : description));
+
+        if (!StringUtils.hasText(sourceText)) {
+            return List.of();
+        }
+
+        LocalDateTime cutoff = LocalDateTime.now().minusDays(DUPLICATE_LOOKBACK_DAYS);
+        Page<Ticket> candidates = ticketRepository.findByCreatedAtAfterOrderByCreatedAtDesc(
+                cutoff,
+                PageRequest.of(0, DUPLICATE_CANDIDATE_LIMIT)
+        );
+
+        return candidates.getContent().stream()
+                .filter(ticket -> ticket.getStatus() != Ticket.TicketStatus.CLOSED && ticket.getStatus() != Ticket.TicketStatus.REJECTED)
+                .map(ticket -> mapDuplicateSuggestion(ticket, normalizedTitle, normalizedDescription, sourceText))
+                .filter(suggestion -> suggestion.getSimilarityScore() >= DUPLICATE_MIN_SCORE)
+                .sorted(Comparator.comparingDouble(DuplicateTicketSuggestion::getSimilarityScore).reversed())
+                .limit(DUPLICATE_RESULT_LIMIT)
+                .collect(Collectors.toList());
+    }
+
+    private DuplicateTicketSuggestion mapDuplicateSuggestion(Ticket candidate,
+                                                             String normalizedTitle,
+                                                             String normalizedDescription,
+                                                             String sourceText) {
+        String candidateTitle = normalizeText(candidate.getTitle());
+        String candidateDescription = normalizeText(candidate.getDescription());
+        String candidateIncident = normalizeText(candidate.getIncidentDescription());
+        String candidateText = normalizeText(candidate.getTitle() + " " + candidate.getDescription() + " " + candidate.getIncidentDescription());
+
+        double titleScore = jaccardSimilarity(normalizedTitle, candidateTitle);
+        double descriptionScore = jaccardSimilarity(normalizedDescription, normalizeText(candidateDescription + " " + candidateIncident));
+        double combinedScore = jaccardSimilarity(sourceText, candidateText);
+        double weightedScore = (combinedScore * 0.5) + (titleScore * 0.3) + (descriptionScore * 0.2);
+
+        return new DuplicateTicketSuggestion(
+                candidate.getId(),
+                candidate.getTitle(),
+                candidate.getStatus(),
+                candidate.getPriority(),
+                candidate.getCategory(),
+                candidate.getCreatedAt(),
+                roundToTwoDecimals(weightedScore)
+        );
+    }
+
+    private double jaccardSimilarity(String left, String right) {
+        Set<String> leftTokens = tokenize(left);
+        Set<String> rightTokens = tokenize(right);
+
+        if (leftTokens.isEmpty() || rightTokens.isEmpty()) {
+            return 0.0;
+        }
+
+        Set<String> union = new LinkedHashSet<>(leftTokens);
+        union.addAll(rightTokens);
+
+        Set<String> intersection = new LinkedHashSet<>(leftTokens);
+        intersection.retainAll(rightTokens);
+
+        return (double) intersection.size() / union.size();
+    }
+
+    private Set<String> tokenize(String value) {
+        if (!StringUtils.hasText(value)) {
+            return Set.of();
+        }
+
+        String[] parts = normalizeText(value).split("\\s+");
+        Set<String> tokens = new LinkedHashSet<>();
+        for (String part : parts) {
+            if (part.length() >= 3) {
+                tokens.add(part);
+            }
+        }
+        return tokens;
+    }
+
+    private String normalizeText(String value) {
+        if (!StringUtils.hasText(value)) {
+            return "";
+        }
+
+        return value
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9\\s]", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
+    }
+
+    private double roundToTwoDecimals(double value) {
+        return Math.round(value * 100.0) / 100.0;
     }
 
     private Ticket.TicketCategory resolveCategory(Ticket.RequestType requestType, Ticket.TicketCategory requestedCategory) {

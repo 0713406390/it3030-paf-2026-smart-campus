@@ -1,6 +1,7 @@
 package com.sliit.paf.repository.member3;
 
 import com.sliit.paf.model.member3.Ticket;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
                                @Param("category") Ticket.TicketCategory category,
                                @Param("priority") Ticket.TicketPriority priority,
                                Pageable pageable);
+
+   Page<Ticket> findByCreatedAtAfterOrderByCreatedAtDesc(LocalDateTime createdAt, Pageable pageable);
 }

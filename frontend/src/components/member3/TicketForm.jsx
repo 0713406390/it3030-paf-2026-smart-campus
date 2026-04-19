@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Button, Row, Col, Alert } from 'react-bootstrap';
-import { createTicket, updateTicket, uploadAttachments } from '../../services/member3/ticketService';
+import { checkDuplicateTickets, createTicket, updateTicket, uploadAttachments } from '../../services/member3/ticketService';
 
 const FACULTY_OPTIONS = [
   { value: 'FACULTY_OF_COMPUTING', label: 'Faculty of Computing' },
@@ -52,6 +52,40 @@ const TicketForm = ({ ticket, onSuccess, onCancel }) => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const [duplicateSuggestions, setDuplicateSuggestions] = useState([]);
+  const [isCheckingDuplicates, setIsCheckingDuplicates] = useState(false);
+
+  useEffect(() => {
+    if (ticket) {
+      return undefined;
+    }
+
+    const title = formData.title?.trim() || '';
+    const descriptionParts = [formData.description, formData.incidentDescription]
+      .filter((part) => part && part.trim().length > 0)
+      .join(' ')
+      .trim();
+
+    if (title.length < 5 && descriptionParts.length < 20) {
+      setDuplicateSuggestions([]);
+      setIsCheckingDuplicates(false);
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        setIsCheckingDuplicates(true);
+        const suggestions = await checkDuplicateTickets(title, descriptionParts);
+        setDuplicateSuggestions(suggestions);
+      } catch (error) {
+        setDuplicateSuggestions([]);
+      } finally {
+        setIsCheckingDuplicates(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [ticket, formData.title, formData.description, formData.incidentDescription]);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -232,6 +266,28 @@ const TicketForm = ({ ticket, onSuccess, onCancel }) => {
           {errors.title}
         </Form.Control.Feedback>
       </Form.Group>
+
+      {!ticket && isCheckingDuplicates && (
+        <Alert variant="secondary" className="py-2">
+          Checking for similar incidents...
+        </Alert>
+      )}
+
+      {!ticket && duplicateSuggestions.length > 0 && (
+        <Alert variant="warning">
+          <div className="fw-semibold mb-2">Possible duplicate incidents found</div>
+          <div className="small text-muted mb-2">
+            Similarity is based on title and description text. Please review before creating a new ticket.
+          </div>
+          <ul className="mb-0 ps-3">
+            {duplicateSuggestions.map((suggestion) => (
+              <li key={suggestion.ticketId} className="mb-1">
+                #{suggestion.ticketId} - {suggestion.title} ({Math.round((suggestion.similarityScore || 0) * 100)}% similar, {suggestion.status})
+              </li>
+            ))}
+          </ul>
+        </Alert>
+      )}
       
       <Row className="mb-3">
         <Col md={6}>

@@ -1,5 +1,6 @@
 package com.sliit.paf.controller.member3;
 
+import com.sliit.paf.dto.member3.DuplicateTicketSuggestion;
 import com.sliit.paf.dto.member3.TicketRequest;
 import com.sliit.paf.dto.member3.TicketUpdateRequest;
 import com.sliit.paf.model.member3.TicketAttachment;
@@ -98,6 +99,14 @@ public class TicketController {
         
         Page<Ticket> tickets = ticketService.getTicketsByFilters(status, category, priority, pageable);
         return ResponseEntity.ok(tickets);
+    }
+
+    @GetMapping("/duplicate-check")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<DuplicateTicketSuggestion>> getDuplicateSuggestions(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String description) {
+        return ResponseEntity.ok(ticketService.findPotentialDuplicates(title, description));
     }
     
     @PutMapping("/{id}")
