@@ -32,6 +32,6 @@ jobs:
     - name: Install dependencies
       run: cd frontend && npm install
     - name: Run tests
-      run: cd frontend && npm run test --if-present -- --watch=false
+      run: cd frontend && npm run test
     - name: Build
       run: cd frontend && npm run build
