@@ -1,6 +1,11 @@
+
+
 import React, { useMemo, useState } from 'react';
-import { Button, ButtonGroup, Container } from 'react-bootstrap';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Button, ButtonGroup, Container, Nav } from 'react-bootstrap';
 import TicketsPage from './pages/member3/TicketsPage';
+import AdminCatalogManagePage from './pages/member1/AdminCatalogManagePage';
+import UserCatalogPage from './pages/member1/UserCatalogPage';
 
 const persistRoleCredentials = (side) => {
   if (side === 'admin') {
@@ -25,7 +30,7 @@ const persistRoleCredentials = (side) => {
   localStorage.setItem('smartCampusActiveSide', 'user');
 };
 
-function App() {
+function AppContent() {
   const initialSide = useMemo(() => {
     const querySide = new URLSearchParams(window.location.search).get('side');
     if (querySide === 'admin' || querySide === 'user') {
@@ -41,6 +46,7 @@ function App() {
   }, []);
 
   const [activeSide, setActiveSide] = useState(initialSide);
+  const location = useLocation();
 
   const handleSwitchSide = (side) => {
     setActiveSide(side);
@@ -53,25 +59,83 @@ function App() {
 
   return (
     <Container fluid className="py-3 px-3 px-md-4">
-      <div className="d-flex justify-content-end mb-3">
-        <ButtonGroup>
-          <Button
-            variant={activeSide === 'user' ? 'primary' : 'outline-primary'}
-            onClick={() => handleSwitchSide('user')}
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        {/* Side Switch Buttons */}
+        <div>
+          <ButtonGroup>
+            <Button
+              variant={activeSide === 'user' ? 'primary' : 'outline-primary'}
+              onClick={() => handleSwitchSide('user')}
+            >
+              User Side
+            </Button>
+            <Button
+              variant={activeSide === 'admin' ? 'danger' : 'outline-danger'}
+              onClick={() => handleSwitchSide('admin')}
+            >
+              Admin Side
+            </Button>
+          </ButtonGroup>
+        </div>
+
+        {/* Navigation Menu */}
+        <Nav className="gap-2">
+          <Link
+            to="/tickets"
+            className={`btn btn-sm ${
+              location.pathname === '/tickets'
+                ? 'btn-info'
+                : 'btn-outline-info'
+            }`}
           >
-            User Side
-          </Button>
-          <Button
-            variant={activeSide === 'admin' ? 'danger' : 'outline-danger'}
-            onClick={() => handleSwitchSide('admin')}
+            Tickets
+          </Link>
+          {activeSide === 'admin' && (
+            <Link
+              to="/resources"
+              className={`btn btn-sm ${
+                location.pathname === '/resources'
+                  ? 'btn-warning'
+                  : 'btn-outline-warning'
+              }`}
+            >
+              Resources
+            </Link>
+          )}
+          <Link
+            to="/resources"
+            className="btn btn-sm btn-success"
           >
-            Admin Side
-          </Button>
-        </ButtonGroup>
+            Resource Admin
+          </Link>
+          <Link
+            to="/user-catalog"
+            className={`btn btn-sm ${
+              location.pathname === '/user-catalog'
+                ? 'btn-secondary'
+                : 'btn-outline-secondary'
+            }`}
+          >
+            Resource User
+          </Link>
+        </Nav>
       </div>
 
-      <TicketsPage mode={activeSide} />
+      <Routes>
+        <Route path="/tickets" element={<TicketsPage mode={activeSide} />} />
+        <Route path="/resources" element={<AdminCatalogManagePage />} />
+        <Route path="/user-catalog" element={<UserCatalogPage />} />
+        <Route path="/" element={<TicketsPage mode={activeSide} />} />
+      </Routes>
     </Container>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 
