@@ -64,41 +64,58 @@ const AdminCatalogManagePage = () => {
   };
 
   return (
-    <Container style={{ marginTop: '30px' }}>
-      <div style={{ marginBottom: '30px' }}>
-        <h2 style={{ fontWeight: '600', color: '#1a3a52', marginBottom: '10px' }}>
-          Facilities & Resources Management
-        </h2>
-        <p style={{ color: '#6c757d', fontSize: '14px' }}>
-          Manage your campus facilities and resources
-        </p>
+    <Container fluid style={{ marginTop: '0px', marginBottom: '40px', paddingTop: '40px', backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+      {/* Professional Header Section */}
+      <div style={{ 
+        marginBottom: '40px', 
+        backgroundColor: 'linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%)',
+        padding: '40px 0',
+        marginLeft: '-12px',
+        marginRight: '-12px',
+        marginTop: '-40px',
+        backgroundImage: 'linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%)',
+        paddingLeft: '12px',
+        paddingRight: '12px'
+      }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', paddingLeft: '20px', paddingRight: '20px' }}>
+          <h1 style={{ fontWeight: '700', color: '#ffffff', marginBottom: '8px', fontSize: '32px' }}>
+            Facilities & Resources Management
+          </h1>
+          <p style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '15px', marginBottom: '0px' }}>
+            Create, edit, and manage your campus facilities and resources
+          </p>
+        </div>
       </div>
 
+      {/* Success Message */}
       {successMessage && (
         <Card style={{ 
           marginBottom: '20px', 
           border: 'none',
           backgroundColor: '#d4edda',
           color: '#155724',
-          borderRadius: '6px'
+          borderRadius: '12px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
         }}>
-          <Card.Body style={{ padding: '12px 20px' }}>
-            <span style={{ marginRight: '10px' }}>✓</span>
+          <Card.Body style={{ padding: '16px 20px', fontSize: '14px', fontWeight: '500' }}>
+            <span style={{ marginRight: '10px', fontWeight: '700' }}>✓</span>
             {successMessage}
           </Card.Body>
         </Card>
       )}
 
+      {/* Error Message */}
       {errorMessage && (
         <Card style={{ 
           marginBottom: '20px',
           border: 'none',
           backgroundColor: '#f8d7da',
           color: '#721c24',
-          borderRadius: '6px'
+          borderRadius: '12px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
         }}>
-          <Card.Body style={{ padding: '12px 20px' }}>
-            <span style={{ marginRight: '10px' }}>✕</span>
+          <Card.Body style={{ padding: '16px 20px', fontSize: '14px', fontWeight: '500' }}>
+            <span style={{ marginRight: '10px', fontWeight: '700' }}>✕</span>
             {errorMessage}
           </Card.Body>
         </Card>
@@ -106,24 +123,32 @@ const AdminCatalogManagePage = () => {
 
       {view === 'list' ? (
         <div>
-          <div style={{ marginBottom: '20px' }}>
+          {/* Add Button */}
+          <div style={{ marginBottom: '30px' }}>
             <button
               onClick={handleAddResource}
               style={{
-                backgroundColor: '#007bff',
+                backgroundColor: '#0d6efd',
                 color: 'white',
                 border: 'none',
-                padding: '10px 20px',
-                borderRadius: '6px',
+                padding: '12px 24px',
+                borderRadius: '8px',
                 cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500',
-                transition: 'background-color 0.2s'
+                fontSize: '15px',
+                fontWeight: '600',
+                transition: 'all 0.3s',
+                boxShadow: '0 2px 8px rgba(13, 110, 253, 0.25)'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = '#0056b3'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = '#007bff'}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#0a58ca';
+                e.target.style.boxShadow = '0 4px 12px rgba(13, 110, 253, 0.35)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#0d6efd';
+                e.target.style.boxShadow = '0 2px 8px rgba(13, 110, 253, 0.25)';
+              }}
             >
-              + Add Resource
+              + Add New Resource
             </button>
           </div>
 
@@ -135,7 +160,7 @@ const AdminCatalogManagePage = () => {
           />
         </div>
       ) : (
-        <Card style={{ marginBottom: '30px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        <Card style={{ marginBottom: '30px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', border: 'none' }}>
           <Card.Body style={{ padding: '40px' }}>
             <ResourceForm
               onSubmit={handleFormSubmit}
