@@ -77,58 +77,131 @@ const UserCatalogPage = () => {
   };
 
   return (
-    <Container fluid style={{ marginTop: '30px', marginBottom: '40px' }}>
-      {/* Header */}
-      <div style={{ marginBottom: '30px' }}>
-        <h2 style={{ fontWeight: '600', color: '#1a3a52', marginBottom: '10px' }}>
-          Resource Catalogue
-        </h2>
+    <Container fluid style={{ marginTop: '0px', marginBottom: '40px', paddingTop: '40px', backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+      {/* Professional Header Section */}
+      <div style={{ 
+        marginBottom: '40px', 
+        backgroundColor: 'linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%)',
+        padding: '40px 0',
+        marginLeft: '-12px',
+        marginRight: '-12px',
+        marginTop: '-40px',
+        backgroundImage: 'linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%)',
+        paddingLeft: '12px',
+        paddingRight: '12px'
+      }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', paddingLeft: '20px', paddingRight: '20px' }}>
+          <h1 style={{ fontWeight: '700', color: '#ffffff', marginBottom: '8px', fontSize: '32px' }}>
+            Resource Catalog
+          </h1>
+          <p style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '15px', marginBottom: '0px' }}>
+            Discover and manage available campus facilities and resources
+          </p>
+        </div>
       </div>
 
       {/* Search & Filter Section */}
-      <Card style={{ marginBottom: '25px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-        <Card.Body style={{ padding: '20px' }}>
-          <ResourceSearchBar onSearch={handleSearch} />
-          <ResourceFilterBar onFilterChange={handleFilterChange} filters={filters} />
+      <Card style={{ 
+        marginBottom: '30px', 
+        borderRadius: '12px', 
+        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+        border: 'none'
+      }}>
+        <Card.Body style={{ padding: '28px' }}>
+          <div style={{ marginBottom: '20px' }}>
+            <p style={{ fontSize: '13px', fontWeight: '600', color: '#6c757d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '15px' }}>Search</p>
+            <ResourceSearchBar onSearch={handleSearch} />
+          </div>
+          <div>
+            <p style={{ fontSize: '13px', fontWeight: '600', color: '#6c757d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '15px' }}>Filters</p>
+            <ResourceFilterBar onFilterChange={handleFilterChange} filters={filters} />
+          </div>
         </Card.Body>
       </Card>
 
-      {/* View Mode Section */}
-      <Card style={{ marginBottom: '25px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-        <Card.Body style={{ padding: '15px 20px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '10px' }}>
-          <label style={{ marginBottom: '0', fontWeight: '500', color: '#1a3a52' }}>View:</label>
+      {/* View Mode & Results Info Section */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '30px',
+        flexWrap: 'wrap',
+        gap: '15px'
+      }}>
+        <div style={{ color: '#6c757d', fontSize: '14px', fontWeight: '500' }}>
+          {!loading && resources.length > 0 && (
+            <span>Showing <strong style={{ color: '#1a3a52' }}>{resources.length}</strong> resource{resources.length !== 1 ? 's' : ''}</span>
+          )}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <label style={{ marginBottom: '0', fontWeight: '600', color: '#1a3a52', fontSize: '14px' }}>View Mode:</label>
           <Button
             variant={viewMode === 'grid' ? 'primary' : 'outline-primary'}
             size="sm"
             onClick={() => handleViewModeChange('grid')}
-            style={{ padding: '6px 12px' }}
+            style={{ 
+              padding: '8px 16px',
+              fontWeight: '500',
+              fontSize: '14px',
+              borderRadius: '6px',
+              border: viewMode === 'grid' ? 'none' : '1.5px solid #0d6efd'
+            }}
           >
-            ⊞ Grid
+            Grid View
           </Button>
           <Button
             variant={viewMode === 'list' ? 'primary' : 'outline-primary'}
             size="sm"
             onClick={() => handleViewModeChange('list')}
-            style={{ padding: '6px 12px' }}
+            style={{ 
+              padding: '8px 16px',
+              fontWeight: '500',
+              fontSize: '14px',
+              borderRadius: '6px',
+              border: viewMode === 'list' ? 'none' : '1.5px solid #0d6efd'
+            }}
           >
-            ☰ List
+            List View
           </Button>
-        </Card.Body>
-      </Card>
+        </div>
+      </div>
 
       {/* Error Message */}
       {error && (
-        <Card style={{ marginBottom: '20px', backgroundColor: '#f8d7da', borderColor: '#f5c6cb' }}>
-          <Card.Body style={{ color: '#721c24', padding: '12px 20px' }}>
-            {error}
+        <Card style={{ 
+          marginBottom: '30px', 
+          backgroundColor: '#f8d7da', 
+          borderColor: '#f5c6cb',
+          borderRadius: '12px',
+          border: '1px solid #f5c6cb'
+        }}>
+          <Card.Body style={{ color: '#721c24', padding: '16px 20px', fontSize: '14px', fontWeight: '500' }}>
+            Error: {error}
           </Card.Body>
         </Card>
       )}
 
       {/* Loading State */}
       {loading && (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#6c757d' }}>
-          <p>Loading resources...</p>
+        <div style={{ textAlign: 'center', padding: '80px 20px', color: '#6c757d' }}>
+          <div style={{ marginBottom: '20px' }}>
+            <div style={{
+              width: '50px',
+              height: '50px',
+              margin: '0 auto',
+              border: '4px solid #e9ecef',
+              borderTop: '4px solid #0d6efd',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}></div>
+          </div>
+          <p style={{ fontSize: '15px', fontWeight: '500' }}>Loading resources...</p>
+          <style>{`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}</style>
         </div>
       )}
 
@@ -144,35 +217,58 @@ const UserCatalogPage = () => {
           {/* Pagination */}
           {totalPages > 1 && (
             <Card style={{
-              marginTop: '30px',
-              borderRadius: '8px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              marginTop: '40px',
+              borderRadius: '12px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+              border: 'none',
+              backgroundColor: '#ffffff'
             }}>
               <Card.Body style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                gap: '15px',
-                padding: '15px'
+                gap: '20px',
+                padding: '24px'
               }}>
                 <Button
-                  variant="outline-secondary"
+                  variant="outline-primary"
                   size="sm"
                   onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
                   disabled={currentPage === 0}
+                  style={{ 
+                    padding: '8px 16px',
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    borderRadius: '6px'
+                  }}
                 >
-                  ← Previous
+                  Previous
                 </Button>
-                <span style={{ color: '#6c757d', fontSize: '14px', minWidth: '150px', textAlign: 'center' }}>
+                <div style={{ 
+                  backgroundColor: '#e9ecef', 
+                  padding: '8px 16px', 
+                  borderRadius: '6px',
+                  color: '#1a3a52', 
+                  fontSize: '14px', 
+                  fontWeight: '600',
+                  minWidth: '160px', 
+                  textAlign: 'center' 
+                }}>
                   Page {currentPage + 1} of {totalPages}
-                </span>
+                </div>
                 <Button
-                  variant="outline-secondary"
+                  variant="outline-primary"
                   size="sm"
                   onClick={() => setCurrentPage(Math.min(totalPages - 1, currentPage + 1))}
                   disabled={currentPage >= totalPages - 1}
+                  style={{ 
+                    padding: '8px 16px',
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    borderRadius: '6px'
+                  }}
                 >
-                  Next →
+                  Next
                 </Button>
               </Card.Body>
             </Card>
@@ -183,14 +279,17 @@ const UserCatalogPage = () => {
       {/* Empty State */}
       {!loading && resources.length === 0 && !error && (
         <Card style={{
-          marginTop: '40px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          textAlign: 'center'
+          marginTop: '60px',
+          borderRadius: '12px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+          textAlign: 'center',
+          border: 'none',
+          backgroundColor: '#ffffff'
         }}>
-          <Card.Body style={{ padding: '60px 20px', color: '#6c757d' }}>
-            <p style={{ fontSize: '16px', marginBottom: '10px' }}>No resources found</p>
-            <p style={{ fontSize: '14px' }}>Try adjusting your search or filters</p>
+          <Card.Body style={{ padding: '80px 40px', color: '#6c757d' }}>
+            <div style={{ marginBottom: '20px', fontSize: '48px' }}>📋</div>
+            <p style={{ fontSize: '18px', fontWeight: '600', marginBottom: '12px', color: '#1a3a52' }}>No Resources Found</p>
+            <p style={{ fontSize: '15px', marginBottom: '0px' }}>Try adjusting your search criteria or applying different filters</p>
           </Card.Body>
         </Card>
       )}

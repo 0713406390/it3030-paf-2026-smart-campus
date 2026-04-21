@@ -4,22 +4,32 @@ import { Row, Col, Card } from 'react-bootstrap';
 const ResourceGrid = ({ resources }) => {
   const getStatusColor = (status) => {
     return status === 'ACTIVE'
-      ? { bg: '#d4edda', text: '#155724', label: '🟢 ACTIVE' }
-      : { bg: '#f8d7da', text: '#721c24', label: '🔴 OUT OF SERVICE' };
+      ? { bg: '#d4edda', text: '#155724', label: 'ACTIVE', borderColor: '#c3e6cb' }
+      : { bg: '#f8d7da', text: '#721c24', label: 'OUT OF SERVICE', borderColor: '#f5c6cb' };
   };
 
   const getTypeIcon = (type) => {
     const icons = {
-      LECTURE_HALL: '🎓',
-      LAB: '🔬',
-      MEETING_ROOM: '💼',
-      EQUIPMENT: '📱'
+      LECTURE_HALL: '📚',
+      LAB: '🧪',
+      MEETING_ROOM: '▭',
+      EQUIPMENT: '⚙'
     };
     return icons[type] || '📍';
   };
 
+  const getTypeLabel = (type) => {
+    const labels = {
+      LECTURE_HALL: 'Lecture Hall',
+      LAB: 'Lab',
+      MEETING_ROOM: 'Meeting Room',
+      EQUIPMENT: 'Equipment'
+    };
+    return labels[type] || type;
+  };
+
   return (
-    <Row className="g-3">
+    <Row className="g-4">
       {resources.map((resource) => {
         const statusColor = getStatusColor(resource.status);
         return (
@@ -27,80 +37,105 @@ const ResourceGrid = ({ resources }) => {
             <Card
               style={{
                 height: '100%',
-                borderRadius: '8px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                border: '1px solid #e0e0e0',
+                borderRadius: '12px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                border: '1px solid #e9ecef',
                 cursor: 'pointer',
-                transition: 'transform 0.2s, box-shadow 0.2s'
+                transition: 'all 0.3s ease',
+                overflow: 'hidden'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                e.currentTarget.style.transform = 'translateY(-6px)';
+                e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
               }}
             >
-              <Card.Body style={{ padding: '20px' }}>
-                <div style={{ marginBottom: '15px' }}>
-                  <div style={{
-                    fontSize: '28px',
-                    marginBottom: '8px'
-                  }}>
-                    {getTypeIcon(resource.type)}
-                  </div>
-                  <h5 style={{
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    color: '#1a3a52',
-                    marginBottom: '5px',
-                    wordBreak: 'break-word'
-                  }}>
-                    {resource.name}
-                  </h5>
+              {/* Card Header with Type Badge */}
+              <div style={{
+                backgroundColor: '#f8f9fa',
+                padding: '16px 20px',
+                borderBottom: '1px solid #e9ecef',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <div style={{ fontSize: '24px' }}>
+                  {getTypeIcon(resource.type)}
                 </div>
-
-                <div style={{
-                  fontSize: '12px',
+                <span style={{
+                  fontSize: '11px',
+                  fontWeight: '700',
                   color: '#6c757d',
-                  marginBottom: '12px',
-                  lineHeight: '1.6'
+                  backgroundColor: '#e9ecef',
+                  padding: '4px 10px',
+                  borderRadius: '4px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.3px'
                 }}>
-                  <div style={{ marginBottom: '6px' }}>
-                    <strong>Type:</strong> {resource.type.replace(/_/g, ' ')}
+                  {getTypeLabel(resource.type)}
+                </span>
+              </div>
+
+              <Card.Body style={{ padding: '20px' }}>
+                <h5 style={{
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  color: '#1a3a52',
+                  marginBottom: '16px',
+                  lineHeight: '1.4'
+                }}>
+                  {resource.name}
+                </h5>
+
+                {/* Resource Details */}
+                <div style={{
+                  fontSize: '13px',
+                  color: '#495057',
+                  lineHeight: '1.8',
+                  marginBottom: '16px'
+                }}>
+                  <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                    <span style={{ fontWeight: '600', minWidth: '70px' }}>Capacity:</span>
+                    <span>{resource.capacity} people</span>
                   </div>
-                  <div style={{ marginBottom: '6px' }}>
-                    <strong>Capacity:</strong> {resource.capacity} people
-                  </div>
-                  <div style={{ marginBottom: '6px' }}>
-                    <strong>Location:</strong> {resource.location}
+                  <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                    <span style={{ fontWeight: '600', minWidth: '70px' }}>Location:</span>
+                    <span>{resource.location}</span>
                   </div>
                   {resource.equipmentType && (
-                    <div style={{ marginBottom: '6px' }}>
-                      <strong>Equipment:</strong> {resource.equipmentType}
+                    <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                      <span style={{ fontWeight: '600', minWidth: '70px' }}>Equipment:</span>
+                      <span>{resource.equipmentType}</span>
                     </div>
                   )}
-                  <div>
-                    <strong>Hours:</strong> {resource.availableFrom?.substring(0, 5)} - {resource.availableTo?.substring(0, 5)}
+                  <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                    <span style={{ fontWeight: '600', minWidth: '70px' }}>Hours:</span>
+                    <span>{resource.availableFrom?.substring(0, 5)} - {resource.availableTo?.substring(0, 5)}</span>
                   </div>
                 </div>
 
+                {/* Status Badge */}
                 <div style={{
-                  marginTop: '15px',
-                  paddingTop: '15px',
-                  borderTop: '1px solid #e0e0e0',
+                  marginTop: '16px',
+                  paddingTop: '16px',
+                  borderTop: `1.5px solid ${statusColor.borderColor}`,
                   textAlign: 'center'
                 }}>
                   <span
                     style={{
                       display: 'inline-block',
-                      padding: '6px 12px',
-                      borderRadius: '16px',
+                      padding: '8px 14px',
+                      borderRadius: '6px',
                       fontSize: '12px',
-                      fontWeight: '600',
+                      fontWeight: '700',
                       backgroundColor: statusColor.bg,
-                      color: statusColor.text
+                      color: statusColor.text,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.3px',
+                      border: `1.5px solid ${statusColor.borderColor}`
                     }}
                   >
                     {statusColor.label}
