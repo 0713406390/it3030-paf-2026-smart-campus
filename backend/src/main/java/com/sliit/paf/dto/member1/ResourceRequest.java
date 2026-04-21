@@ -21,7 +21,6 @@ public class ResourceRequest {
 
     private String equipmentType;
 
-    @NotNull(message = "Capacity is required")
     @Min(value = 1, message = "Capacity must be at least 1")
     private Integer capacity;
 

@@ -99,7 +99,7 @@ const ResourceGrid = ({ resources }) => {
                 }}>
                   <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
                     <span style={{ fontWeight: '600', minWidth: '70px' }}>Capacity:</span>
-                    <span>{resource.capacity} people</span>
+                    <span>{resource.capacity}</span>
                   </div>
                   <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
                     <span style={{ fontWeight: '600', minWidth: '70px' }}>Location:</span>

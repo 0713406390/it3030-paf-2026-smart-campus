@@ -33,9 +33,20 @@ const ResourceForm = ({ onSubmit, onCancel, initialData = null, isEditMode = fal
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    let newData = { [name]: value };
+
+    // When type changes to EQUIPMENT, set capacity to null
+    if (name === 'type' && value === 'EQUIPMENT') {
+      newData.capacity = null;
+    }
+    // When type changes from EQUIPMENT to something else, set default capacity
+    if (name === 'type' && value !== 'EQUIPMENT' && formData.type === 'EQUIPMENT') {
+      newData.capacity = '';
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      ...newData,
     }));
     if (errors[name]) {
       setErrors((prev) => ({
@@ -57,7 +68,8 @@ const ResourceForm = ({ onSubmit, onCancel, initialData = null, isEditMode = fal
     if (formData.type === 'EQUIPMENT' && !formData.equipmentType.trim()) {
       newErrors.equipmentType = 'Equipment type is required when type is Equipment';
     }
-    if (!formData.capacity || formData.capacity <= 0) {
+    // Only require capacity for non-EQUIPMENT types
+    if (formData.type !== 'EQUIPMENT' && (!formData.capacity || formData.capacity <= 0)) {
       newErrors.capacity = 'Capacity must be a positive number';
     }
     if (!formData.location.trim()) {
@@ -167,24 +179,26 @@ const ResourceForm = ({ onSubmit, onCancel, initialData = null, isEditMode = fal
 
       <Row className="mb-3">
         <Col md={6}>
-          <Form.Group>
-            <Form.Label style={{ fontWeight: '500', color: '#1a3a52' }}>Capacity *</Form.Label>
-            <Form.Control
-              type="number"
-              name="capacity"
-              value={formData.capacity}
-              onChange={handleInputChange}
-              placeholder="Enter capacity"
-              min="1"
-              disabled={loading}
-              isInvalid={!!errors.capacity}
-            />
-            {errors.capacity && (
-              <div style={{ fontSize: '13px', color: '#dc3545', marginTop: '5px' }}>
-                {errors.capacity}
-              </div>
-            )}
-          </Form.Group>
+          {formData.type !== 'EQUIPMENT' && (
+            <Form.Group>
+              <Form.Label style={{ fontWeight: '500', color: '#1a3a52' }}>Capacity *</Form.Label>
+              <Form.Control
+                type="number"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleInputChange}
+                placeholder="Enter capacity"
+                min="1"
+                disabled={loading}
+                isInvalid={!!errors.capacity}
+              />
+              {errors.capacity && (
+                <div style={{ fontSize: '13px', color: '#dc3545', marginTop: '5px' }}>
+                  {errors.capacity}
+                </div>
+              )}
+            </Form.Group>
+          )}
         </Col>
         <Col md={6}>
           <Form.Group>

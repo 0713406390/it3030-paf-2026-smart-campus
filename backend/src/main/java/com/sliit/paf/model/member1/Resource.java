@@ -28,7 +28,7 @@ public class Resource {
     @Column(nullable = true)
     private String equipmentType;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer capacity;
 
     @Column(nullable = false)

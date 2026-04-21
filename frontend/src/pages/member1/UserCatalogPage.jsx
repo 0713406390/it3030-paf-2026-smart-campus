@@ -95,7 +95,7 @@ const UserCatalogPage = () => {
             Resource Catalog
           </h1>
           <p style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '15px', marginBottom: '0px' }}>
-            Discover and manage available campus facilities and resources
+            Access and search campus resources and facilities easily.
           </p>
         </div>
       </div>

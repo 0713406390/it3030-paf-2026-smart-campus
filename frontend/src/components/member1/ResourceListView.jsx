@@ -128,7 +128,7 @@ const ResourceListView = ({ resources }) => {
                       </span>
                     </td>
                     <td style={{ padding: '16px 18px', color: '#495057' }}>
-                      {resource.capacity} people
+                      {resource.capacity}
                     </td>
                     <td style={{ padding: '16px 18px', color: '#495057' }}>
                       {resource.location}

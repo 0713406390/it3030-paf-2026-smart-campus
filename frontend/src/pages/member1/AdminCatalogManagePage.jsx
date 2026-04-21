@@ -36,11 +36,17 @@ const AdminCatalogManagePage = () => {
 
   const handleFormSubmit = async (formData) => {
     try {
+      // Prepare data for submission - remove capacity if it's null (for EQUIPMENT)
+      const submissionData = { ...formData };
+      if (submissionData.capacity === null || submissionData.capacity === '') {
+        delete submissionData.capacity;
+      }
+
       if (isEditMode) {
-        await resourceService.updateResource(selectedResource.id, formData);
+        await resourceService.updateResource(selectedResource.id, submissionData);
         setSuccessMessage('Resource updated successfully!');
       } else {
-        await resourceService.createResource(formData);
+        await resourceService.createResource(submissionData);
         setSuccessMessage('Resource created successfully!');
       }
       setView('list');

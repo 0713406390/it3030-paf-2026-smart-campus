@@ -213,7 +213,7 @@ const ResourceList = ({ onEdit, onDelete, onAddNew, resources: initialResources 
                       {resource.equipmentType || '-'}
                     </td>
                     <td style={{ padding: '16px 18px', color: '#495057' }}>
-                      {resource.capacity} people
+                      {resource.capacity}
                     </td>
                     <td style={{ padding: '16px 18px', color: '#495057' }}>
                       {resource.location}
@@ -282,61 +282,6 @@ const ResourceList = ({ onEdit, onDelete, onAddNew, resources: initialResources 
           </Table>
         </div>
       </Card.Body>
-
-      {totalPages > 0 && (
-        <Card.Footer style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '20px',
-          backgroundColor: '#f8f9fa',
-          borderTop: '2px solid #e9ecef',
-          padding: '24px 15px'
-        }}>
-          <Button
-            size="sm"
-            variant="outline-primary"
-            onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
-            disabled={currentPage === 0}
-            style={{
-              fontWeight: '600',
-              fontSize: '14px',
-              padding: '8px 16px',
-              borderRadius: '6px',
-              border: '1.5px solid #dee2e6'
-            }}
-          >
-            Previous
-          </Button>
-          <div style={{ 
-            backgroundColor: '#e9ecef', 
-            padding: '8px 16px', 
-            borderRadius: '6px',
-            color: '#1a3a52', 
-            fontSize: '14px', 
-            fontWeight: '600',
-            minWidth: '160px', 
-            textAlign: 'center' 
-          }}>
-            Page {currentPage + 1} of {totalPages}
-          </div>
-          <Button
-            size="sm"
-            variant="outline-primary"
-            onClick={() => setCurrentPage(Math.min(totalPages - 1, currentPage + 1))}
-            disabled={currentPage >= totalPages - 1}
-            style={{
-              fontWeight: '600',
-              fontSize: '14px',
-              padding: '8px 16px',
-              borderRadius: '6px',
-              border: '1.5px solid #dee2e6'
-            }}
-          >
-            Next
-          </Button>
-        </Card.Footer>
-      )}
     </Card>
   );
 };
