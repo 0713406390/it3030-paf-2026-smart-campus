@@ -1,7 +1,0 @@
-CHECK backend reachable: PASS status=200
-CHECK create ticket A by user: PASS id=15
-CHECK admin can see all tickets (includes A): PASS
-CHECK admin change to IN_PROGRESS: PASS
-CHECK admin change to RESOLVED with report: PASS
-CHECK admin change to CLOSED: PASS
-CHECK admin reject with reason: PASS
