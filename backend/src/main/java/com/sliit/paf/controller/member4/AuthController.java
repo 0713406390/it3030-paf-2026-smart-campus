@@ -59,6 +59,11 @@ public class AuthController {
         response.put("email", user.getEmail());
         response.put("role", user.getRole().name());
         response.put("enabled", user.isEnabled());
+        response.put("phone", user.getPhone());
+        response.put("department", user.getDepartment());
+        response.put("bio", user.getBio());
+        response.put("createdAt", user.getCreatedAt());
+        response.put("updatedAt", user.getUpdatedAt());
         response.put("createdAt", user.getCreatedAt());
 
         return ResponseEntity.ok(response);

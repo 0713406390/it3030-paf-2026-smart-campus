@@ -19,6 +19,7 @@ public class SmartCampusBackendApplication {
         SpringApplication.run(SmartCampusBackendApplication.class, args);
     }
 
+}
     @Bean
     public CommandLineRunner seedTechnicians(UserRepository userRepository) {
         return args -> {
