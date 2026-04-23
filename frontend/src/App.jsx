@@ -6,6 +6,7 @@ import AdminRoute from './components/member4/AdminRoute';
 import LoginPage from './pages/member4/LoginPage';
 import RegisterPage from './pages/member4/RegisterPage';
 import DashboardPage from './pages/member4/DashboardPage';
+import ProfilePage from './pages/member4/ProfilePage';
 import AdminUsersPage from './pages/member4/AdminUsersPage';
 import NotificationsPage from './pages/member4/NotificationsPage';
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
           {/* Protected (any logged-in user) */}
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
 

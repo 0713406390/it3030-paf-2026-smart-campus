@@ -29,7 +29,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await register(form.name, form.email, form.password);
-      navigate('/dashboard');
+      navigate('/profile');
     } catch (err) {
       console.error('Registration error:', err);
       if (err.response?.status === 400) {

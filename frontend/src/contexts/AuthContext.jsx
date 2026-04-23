@@ -3,6 +3,12 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import api, { clearAuthToken, publicApi, setAuthToken } from '../services/member4/api';
 
 const AuthContext = createContext(null);
+const AUTH_BASE = '/auth';
+const USER_KEYS = ['user'];
+
+function saveUser(user) {
+  USER_KEYS.forEach((key) => localStorage.setItem(key, JSON.stringify(user)));
+}
 
 function readSavedUser() {
   const saved = localStorage.getItem('user');
@@ -34,9 +40,9 @@ export function AuthProvider({ children }) {
 
     const syncCurrentUser = async () => {
       try {
-        const { data } = await api.get('/auth/me');
+        const { data } = await api.get(`${AUTH_BASE}/me`);
         setUser(data);
-        localStorage.setItem('user', JSON.stringify(data));
+        saveUser(data);
       } catch {
         clearAuthToken();
         setUser(null);
@@ -50,7 +56,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     clearAuthToken();
-    const { data } = await publicApi.post('/auth/login', { email, password });
+    const { data } = await publicApi.post(`${AUTH_BASE}/login`, { email, password });
     const nextUser = {
       id: data.userId,
       name: data.name,
@@ -60,15 +66,15 @@ export function AuthProvider({ children }) {
     };
 
     localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(nextUser));
     setAuthToken(data.token);
+    saveUser(nextUser);
     setUser(nextUser);
     return nextUser;
   };
 
   const register = async (name, email, password) => {
     clearAuthToken();
-    const { data } = await publicApi.post('/auth/register', { name, email, password });
+    const { data } = await publicApi.post(`${AUTH_BASE}/register`, { name, email, password });
     const nextUser = {
       id: data.userId,
       name: data.name,
@@ -78,10 +84,21 @@ export function AuthProvider({ children }) {
     };
 
     localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(nextUser));
     setAuthToken(data.token);
+    saveUser(nextUser);
     setUser(nextUser);
     return nextUser;
+  };
+
+  const completeOAuthLogin = (token, oauthUser) => {
+    setAuthToken(token);
+    saveUser(oauthUser);
+    setUser(oauthUser);
+  };
+
+  const updateCurrentUser = (nextUser) => {
+    saveUser(nextUser);
+    setUser(nextUser);
   };
 
   const logout = () => {
@@ -95,6 +112,8 @@ export function AuthProvider({ children }) {
       loading,
       login,
       register,
+      completeOAuthLogin,
+      updateCurrentUser,
       logout,
       isAdmin: user?.role === 'ADMIN',
       isAuthenticated: Boolean(user),
