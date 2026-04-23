@@ -1,0 +1,207 @@
+:root {
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f0f4f8;
+  color: #1f2937;
+  min-height: 100vh;
+}
+
+/* ── Auth pages layout ── */
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+}
+
+.auth-sidebar {
+  width: 420px;
+  background: linear-gradient(160deg, #1e40af, #3b82f6, #06b6d4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 48px 40px;
+  color: white;
+}
+
+.auth-sidebar .brand-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.auth-sidebar h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.auth-sidebar p {
+  font-size: 15px;
+  opacity: 0.85;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.auth-sidebar .features {
+  margin-top: 40px;
+  width: 100%;
+}
+
+.auth-sidebar .feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.auth-sidebar .feature-item i {
+  font-size: 18px;
+  width: 24px;
+}
+
+.auth-form-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
+.auth-card h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.auth-card .subtitle {
+  color: #6b7280;
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.auth-card .form-control {
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 1.5px solid #d1d5db;
+  transition: border-color 0.2s;
+}
+
+.auth-card .form-control:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
+
+.auth-card .form-label {
+  font-weight: 500;
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.btn-primary-auth {
+  background: linear-gradient(90deg, #1e40af, #3b82f6);
+  border: none;
+  border-radius: 8px;
+  padding: 11px;
+  font-size: 15px;
+  font-weight: 600;
+  width: 100%;
+  color: white;
+  transition: opacity 0.2s;
+}
+
+.btn-primary-auth:hover {
+  opacity: 0.92;
+  color: white;
+}
+
+.btn-google {
+  background: #fff;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+
+.btn-google:hover {
+  background: #f9fafb;
+  color: #111827;
+}
+
+.divider-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #9ca3af;
+  font-size: 13px;
+  margin: 20px 0;
+}
+
+.divider-text::before,
+.divider-text::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+/* ── Notification styles ── */
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background: #dc3545;
+  color: white;
+  font-size: 10px;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.notification-item:hover { background: #f9fafb; }
+.notification-item.unread { background: #eff6ff; font-weight: 500; }
+
+/* ── General app ── */
+.page-wrapper {
+  min-height: 100vh;
+  background: #f0f4f8;
+}
+
+@media (max-width: 768px) {
+  .auth-sidebar { display: none; }
+  .auth-card { padding: 28px 20px; }
+}
