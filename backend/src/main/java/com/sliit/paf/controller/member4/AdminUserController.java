@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +40,27 @@ public class AdminUserController {
         return ResponseEntity.ok(users.stream().map(UserSummaryResponse::from).collect(Collectors.toList()));
     }
 
+
+    public AdminUserController(AppUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    // GET /api/admin/users
+    @GetMapping
+    public ResponseEntity<List<UserSummaryResponse>> getAllUsers(
+            @RequestParam(required = false) String role) {
+        List<AppUser> users;
+        if (role != null) {
+            users = userRepository.findByRole(Role.valueOf(role.toUpperCase()));
+        } else {
+            users = userRepository.findAll();
+        }
+        return ResponseEntity.ok(
+            users.stream().map(UserSummaryResponse::from).collect(Collectors.toList())
+        );
+    }
+
+    // GET /api/admin/users/{id}
     @GetMapping("/{id}")
     public ResponseEntity<UserSummaryResponse> getUserById(@PathVariable Long id) {
         AppUser user = userRepository.findById(id)
@@ -112,6 +135,11 @@ public class AdminUserController {
     @PutMapping("/{id}/role")
     public ResponseEntity<UserSummaryResponse> updateRole(
             @PathVariable Long id, @RequestBody Map<String, String> body) {
+    // PUT /api/admin/users/{id}/role
+    @PutMapping("/{id}/role")
+    public ResponseEntity<UserSummaryResponse> updateRole(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body) {
         AppUser user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         user.setRole(Role.valueOf(body.get("role").toUpperCase()));
@@ -121,12 +149,18 @@ public class AdminUserController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<UserSummaryResponse> updateStatus(
             @PathVariable Long id, @RequestBody Map<String, Boolean> body) {
+    // PATCH /api/admin/users/{id}/status
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<UserSummaryResponse> updateStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, Boolean> body) {
         AppUser user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         user.setEnabled(body.get("enabled"));
         return ResponseEntity.ok(UserSummaryResponse.from(userRepository.save(user)));
     }
 
+    // DELETE /api/admin/users/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         if (!userRepository.existsById(id)) {
@@ -150,4 +184,5 @@ public class AdminUserController {
         String trimmed = value.trim();
         return trimmed.isEmpty() ? null : trimmed;
     }
+}
 }

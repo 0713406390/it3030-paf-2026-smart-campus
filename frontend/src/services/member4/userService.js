@@ -39,3 +39,6 @@ export const updateMyProfile = async (payload) => {
   const res = await api.put('/users/profile', payload);
   return res.data;
 };
+export async function deleteUser(id) {
+  await api.delete(`/admin/users/${id}`);
+}

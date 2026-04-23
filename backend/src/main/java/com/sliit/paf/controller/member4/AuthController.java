@@ -64,6 +64,7 @@ public class AuthController {
         response.put("bio", user.getBio());
         response.put("createdAt", user.getCreatedAt());
         response.put("updatedAt", user.getUpdatedAt());
+        response.put("createdAt", user.getCreatedAt());
 
         return ResponseEntity.ok(response);
     }

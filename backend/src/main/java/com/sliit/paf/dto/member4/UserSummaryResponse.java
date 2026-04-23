@@ -30,3 +30,7 @@ public class UserSummaryResponse {
         return dto;
     }
 }
+        dto.setCreatedAt(user.getCreatedAt());
+        return dto;
+    }
+}

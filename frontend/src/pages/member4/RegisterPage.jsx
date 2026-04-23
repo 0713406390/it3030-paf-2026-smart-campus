@@ -30,6 +30,7 @@ export default function RegisterPage() {
     try {
       await register(form.name, form.email, form.password);
       navigate('/profile');
+      navigate('/dashboard');
     } catch (err) {
       console.error('Registration error:', err);
       if (err.response?.status === 400) {

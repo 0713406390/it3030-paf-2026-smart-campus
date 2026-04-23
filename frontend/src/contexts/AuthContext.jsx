@@ -43,6 +43,9 @@ export function AuthProvider({ children }) {
         const { data } = await api.get(`${AUTH_BASE}/me`);
         setUser(data);
         saveUser(data);
+        const { data } = await api.get('/auth/me');
+        setUser(data);
+        localStorage.setItem('user', JSON.stringify(data));
       } catch {
         clearAuthToken();
         setUser(null);
@@ -57,6 +60,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     clearAuthToken();
     const { data } = await publicApi.post(`${AUTH_BASE}/login`, { email, password });
+    const { data } = await publicApi.post('/auth/login', { email, password });
     const nextUser = {
       id: data.userId,
       name: data.name,
@@ -68,6 +72,8 @@ export function AuthProvider({ children }) {
     localStorage.setItem('token', data.token);
     setAuthToken(data.token);
     saveUser(nextUser);
+    localStorage.setItem('user', JSON.stringify(nextUser));
+    setAuthToken(data.token);
     setUser(nextUser);
     return nextUser;
   };
@@ -75,6 +81,7 @@ export function AuthProvider({ children }) {
   const register = async (name, email, password) => {
     clearAuthToken();
     const { data } = await publicApi.post(`${AUTH_BASE}/register`, { name, email, password });
+    const { data } = await publicApi.post('/auth/register', { name, email, password });
     const nextUser = {
       id: data.userId,
       name: data.name,
@@ -86,6 +93,8 @@ export function AuthProvider({ children }) {
     localStorage.setItem('token', data.token);
     setAuthToken(data.token);
     saveUser(nextUser);
+    localStorage.setItem('user', JSON.stringify(nextUser));
+    setAuthToken(data.token);
     setUser(nextUser);
     return nextUser;
   };

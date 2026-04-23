@@ -18,6 +18,7 @@ export default function LoginPage() {
     try {
       const nextUser = await login(email, password);
       navigate(nextUser.role === 'ADMIN' ? '/admin/users' : '/profile');
+      navigate(nextUser.role === 'ADMIN' ? '/admin/users' : '/dashboard');
     } catch (err) {
       console.error('Login error:', err);
       if (err.response?.status === 400) {
