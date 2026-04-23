@@ -4,20 +4,29 @@ import api, { clearAuthToken, publicApi, setAuthToken } from '../services/member
 
 const AuthContext = createContext(null);
 const AUTH_BASE = '/api/auth';
+const USER_KEYS = ['user', 'smartcampus_user'];
+
+function saveUser(user) {
+  USER_KEYS.forEach((key) => localStorage.setItem(key, JSON.stringify(user)));
+}
 
 function readSavedUser() {
-  const saved = localStorage.getItem('user');
-  if (!saved) {
-    return null;
+  for (const key of USER_KEYS) {
+    const saved = localStorage.getItem(key);
+    if (!saved) {
+      continue;
+    }
+
+    try {
+      return JSON.parse(saved);
+    } catch {
+      localStorage.removeItem(key);
+    }
   }
 
-  try {
-    return JSON.parse(saved);
-  } catch {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    return null;
-  }
+  localStorage.removeItem('token');
+  localStorage.removeItem('smartcampus_token');
+  return null;
 }
 
 export function AuthProvider({ children }) {
@@ -37,7 +46,7 @@ export function AuthProvider({ children }) {
       try {
         const { data } = await api.get(`${AUTH_BASE}/me`);
         setUser(data);
-        localStorage.setItem('user', JSON.stringify(data));
+        saveUser(data);
       } catch {
         clearAuthToken();
         setUser(null);
@@ -61,8 +70,8 @@ export function AuthProvider({ children }) {
     };
 
     localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(nextUser));
     setAuthToken(data.token);
+    saveUser(nextUser);
     setUser(nextUser);
     return nextUser;
   };
@@ -79,10 +88,21 @@ export function AuthProvider({ children }) {
     };
 
     localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(nextUser));
     setAuthToken(data.token);
+    saveUser(nextUser);
     setUser(nextUser);
     return nextUser;
+  };
+
+  const completeOAuthLogin = (token, oauthUser) => {
+    setAuthToken(token);
+    saveUser(oauthUser);
+    setUser(oauthUser);
+  };
+
+  const updateCurrentUser = (nextUser) => {
+    saveUser(nextUser);
+    setUser(nextUser);
   };
 
   const logout = () => {
@@ -96,6 +116,8 @@ export function AuthProvider({ children }) {
       loading,
       login,
       register,
+      completeOAuthLogin,
+      updateCurrentUser,
       logout,
       isAdmin: user?.role === 'ADMIN',
       isAuthenticated: Boolean(user),

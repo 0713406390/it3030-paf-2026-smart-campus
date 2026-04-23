@@ -17,7 +17,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const user = await login(email, password);
-      navigate(user.role === 'ADMIN' ? '/admin' : '/dashboard');
+      navigate(user.role === 'ADMIN' ? '/admin/users' : '/profile');
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password');
     } finally {

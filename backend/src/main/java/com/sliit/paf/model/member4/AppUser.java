@@ -38,6 +38,15 @@ public class AppUser {
     @Builder.Default
     private boolean enabled = true;
 
+    @Column(length = 30)
+    private String phone;
+
+    @Column(length = 120)
+    private String department;
+
+    @Column(length = 500)
+    private String bio;
+
     private String resetToken;
 
     private LocalDateTime resetTokenExpiry;

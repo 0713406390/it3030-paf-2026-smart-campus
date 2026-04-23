@@ -1,37 +1,49 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function OAuth2RedirectPage() {
   const navigate = useNavigate();
+  const { user, completeOAuthLogin } = useAuth();
+  const processed = useRef(false);
 
+  // Run once on mount: extract params and commit them to auth state.
+  // Navigation is intentionally NOT done here — we wait for the user
+  // state to be committed before navigating (see effect below).
   useEffect(() => {
+    if (processed.current) return;
+    processed.current = true;
+
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
-    const id = params.get('id');
-    const name = params.get('name');
     const email = params.get('email');
-    const role = params.get('role');
 
     if (!token || !email) {
       navigate('/login?error=google_auth_failed', { replace: true });
       return;
     }
 
-    const user = {
+    const id = params.get('id');
+    const name = params.get('name');
+    const role = params.get('role');
+
+    completeOAuthLogin(token, {
       id: id ? Number(id) : null,
       name: name || email,
       email,
       role: role || 'USER',
       enabled: true,
-    };
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    localStorage.setItem('token', token);
-    localStorage.setItem('smartcampus_token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('smartcampus_user', JSON.stringify(user));
-
-    navigate(user.role === 'ADMIN' ? '/admin' : '/dashboard', { replace: true });
-  }, [navigate]);
+  // Navigate only after React has committed the user state so that
+  // ProtectedRoute sees an authenticated user and doesn't bounce back to login.
+  useEffect(() => {
+    if (user) {
+      navigate(user.role === 'ADMIN' ? '/admin/users' : '/profile', { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100">

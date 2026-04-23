@@ -2,10 +2,11 @@ package com.sliit.paf.dto.member4;
 
 import com.sliit.paf.model.member4.AppUser;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Data
-public class UserSummaryResponse {
+public class UserProfileResponse {
     private Long id;
     private String name;
     private String email;
@@ -15,9 +16,10 @@ public class UserSummaryResponse {
     private String department;
     private String bio;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public static UserSummaryResponse from(AppUser user) {
-        UserSummaryResponse dto = new UserSummaryResponse();
+    public static UserProfileResponse from(AppUser user) {
+        UserProfileResponse dto = new UserProfileResponse();
         dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
@@ -27,6 +29,7 @@ public class UserSummaryResponse {
         dto.setDepartment(user.getDepartment());
         dto.setBio(user.getBio());
         dto.setCreatedAt(user.getCreatedAt());
+        dto.setUpdatedAt(user.getUpdatedAt());
         return dto;
     }
 }
