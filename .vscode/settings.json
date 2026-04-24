@@ -1,5 +1,6 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive",
-    "java.compile.nullAnalysis.mode": "automatic"
-}
+  "java.project.sourcePaths": [
+    "backend/src/main/java",
+    "backend/src/test"
+  ]
 }
