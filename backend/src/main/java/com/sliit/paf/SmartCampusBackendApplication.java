@@ -9,10 +9,17 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class SmartCampusBackendApplication {
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SmartCampusBackendApplication {
+
     public static void main(String[] args) {
         SpringApplication.run(SmartCampusBackendApplication.class, args);
     }
 
+}
     @Bean
     public CommandLineRunner seedTechnicians(UserRepository userRepository) {
         return args -> {
@@ -31,4 +38,5 @@ public class SmartCampusBackendApplication {
             return userRepository.save(user);
         });
     }
+}
 }
