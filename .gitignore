@@ -1,5 +1,56 @@
-.tools/*.zip
-backend/target/
-frontend/node_modules/
-frontend/dist/
-frontend/coverage/
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Security
+.env
+.env.local
+target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+# Ignore backend build files
+**/target/
+**/.mvn/
+
+# Ignore frontend dependencies and builds
+**/node_modules/
+**/dist/
+
+# Ignore environment variables (Important for security!)
+**/.env
+**/.env.local
+backend/src/main/resources/application.yml
+backend/src/main/resources/application.yml
+
+#ingnore uploaded files
+**/uploads/**
+backend/src/main/resources/application.yml
